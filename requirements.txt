@@ -1,0 +1,9 @@
+requests~=2.32.3
+boto3~=1.37.9
+PyMySQL~=1.1.1
+Pillow~=11.1.0
+newsdataapi~=0.1.21
+sqlalchemy~=2.0.38
+sqlalchemy-utils
+sqlacodegen
+schedule~=1.2.2
