@@ -7,3 +7,4 @@ sqlalchemy~=2.0.38
 sqlalchemy-utils
 sqlacodegen
 schedule~=1.2.2
+langcodes~=3.5.0
