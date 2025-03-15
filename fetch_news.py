@@ -1,8 +1,6 @@
 import datetime
 import sys
 
-import requests
-import logging
 import uuid
 import logging
 
@@ -77,6 +75,12 @@ def lambda_handler(event):
                     if creator is not None and len(creator) > 0:
                         creator = creator[0]
 
+                    exsiting_news = db.get_news_by_remote_id(article.get("article_id"))
+
+                    if exsiting_news:
+                        logger.info(f"Exsiting news article: {article.get('title')}")
+                        continue
+
                     processed_images = []
                     image_uuid = uuid.uuid4()
                     if image_url:
@@ -135,6 +139,16 @@ def lambda_handler(event):
 if __name__ == "__main__":
 
     data  = {
+        'tourism': {
+            "category": "tourism",
+            "nisee_category": "travel",
+            "sub_categories": ["africa", "europe", "china", "india", "united states"]
+        },
+        'real_estate': {
+            "category": "real_estate",
+            "nisee_category": "real_estate",
+            "sub_categories": ["real_estate"]
+        },
         'business': {
             "category": "business",
             "nisee_category": "economy",
@@ -160,16 +174,7 @@ if __name__ == "__main__":
             "nisee_category": "politics",
             "sub_categories": ["united states", "india", "china", "russia", "europe", "asia", "africa"]
         },
-        'tourism': {
-            "category": "tourism",
-            "nisee_category": "travel",
-            "sub_categories": ["africa", "europe", "china", "india", "united states"]
-        },
-        'real_estate': {
-            "category": "real_estate",
-            "nisee_category": "real_estate",
-            "sub_categories": ["real_estate"]
-        },
+
         'lifestyle': {
             "category": "lifestyle",
             "nisee_category": "lifestyle",
