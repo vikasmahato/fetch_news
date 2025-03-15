@@ -41,6 +41,7 @@ def lambda_handler(event):
         client = NewsDataApiClient(apikey=get_news_data_api_key())
 
         for sub_category in sub_categories:
+            saved_count = 0
             processed_news = []
             response = client.latest_api(q=sub_category,
                                          country=["us", "in"],
@@ -123,6 +124,7 @@ def lambda_handler(event):
 
                     if len(processed_news) >= 10:
                         db.save_all(processed_news)
+                        saved_count = saved_count + len(processed_news)
                         processed_news = []
 
                 except Exception as e:
@@ -130,6 +132,8 @@ def lambda_handler(event):
                     continue
 
             db.save_all(processed_news)
+            saved_count = saved_count + len(processed_news)
+            db.save_metrics(news_data_category, sub_category, saved_count)
 
         return {"message": "News processing completed."}
 

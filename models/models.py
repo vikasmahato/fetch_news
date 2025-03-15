@@ -2,7 +2,7 @@ import uuid
 from typing import Any, List, Optional
 
 from sqlalchemy import BINARY, BigInteger, Column, Date, Double, Enum, ForeignKeyConstraint, Index, Integer, JSON, \
-    String, Table, Text, text, ForeignKey
+    String, Table, Text, text, ForeignKey, DateTime
 from sqlalchemy.dialects.mysql import BIT, DATETIME, MEDIUMTEXT, TINYTEXT
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
@@ -239,6 +239,20 @@ class CountryTranslation(Base):
 
 
 
+class NewsFetchMetrics(Base):
+    __tablename__ = 'news_fetch_metrics'
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    category = Column(String(255), nullable=False)
+    sub_category = Column(String(255), nullable=False)
+    fetch_count = Column(Integer, nullable=False)
+    fetched_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+
+    def __init__(self, category, sub_category, fetch_count, fetched_at=None):
+        self.category = category
+        self.sub_category = sub_category
+        self.fetch_count = fetch_count
+        self.fetched_at = fetched_at or datetime.datetime.utcnow()
 
 class RssFeed(Base):
     __tablename__ = 'rss_feed'

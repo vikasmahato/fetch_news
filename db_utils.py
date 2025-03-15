@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, load_only
 
 from get_secrets import get_db_url
-from models.models import NewsPost, Country, Source, Category
+from models.models import NewsPost, Country, Source, Category, NewsFetchMetrics
 import logging
 
 logger = logging.getLogger()
@@ -28,6 +28,11 @@ class DatabaseSession:
     def get_news_by_remote_id(self, remote_id: str) -> Type[NewsPost] | None:
         """Fetch a news post by its remote ID."""
         return self.session.query(NewsPost).filter(NewsPost.remote_id == remote_id).first()
+
+    def save_metrics(self, category, subcategory, fetch_count):
+        new_metric = NewsFetchMetrics(category=category, sub_category=subcategory, fetch_count=fetch_count)
+        self.session.add(new_metric)
+        self.session.commit()
 
     def get_source(self, source_data: dict) -> Source:
         """Fetch or create a source by its code, with caching."""
