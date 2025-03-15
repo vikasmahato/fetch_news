@@ -1,6 +1,5 @@
 import schedule
 import time
-import requests
 
 from fetch_news import lambda_handler
 

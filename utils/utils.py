@@ -3,10 +3,17 @@ import json
 import re
 import requests
 import logging
+import langcodes
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+def get_language_code(language_name: str) -> str:
+    try:
+        language = langcodes.find(language_name)
+        return language.language.split('-')[0]  # Extract 2-letter code
+    except ValueError:
+        return "unknown"
 
 def count_sentences(text):
     """

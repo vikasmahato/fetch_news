@@ -1,18 +1,31 @@
 import datetime
+import sys
 
 import requests
 import logging
 import uuid
 import logging
 
+from newsdataapi import NewsDataApiClient
+
 from db_utils import DatabaseSession
 from get_secrets import get_news_data_api_key
 from models.models import NewsPost, NewsPostVideo, NewsPostImage
 from s3_utils import process_image
-from utils.utils import count_sentences, is_image_downloadable, process_text_to_editorjs
+from utils.utils import count_sentences, is_image_downloadable, process_text_to_editorjs, get_language_code
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+console_handler = logging.StreamHandler(sys.stdout)  # Output logs to stdout
+console_handler.setLevel(logging.INFO)
+
+# Define log format
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+
+# Add handler to logger
+logger.addHandler(console_handler)
 
 
 def lambda_handler(event):
@@ -26,17 +39,16 @@ def lambda_handler(event):
         news_data_category = event.get("category").upper()
         sub_categories = event.get("sub_categories", [])
 
-
-
-        NEWS_API_URL = f"https://newsdata.io/api/1/news"
+        client = NewsDataApiClient(apikey=get_news_data_api_key())
 
         for sub_category in sub_categories:
             processed_news = []
-            response = requests.get(NEWS_API_URL, params={"apikey": API_KEY, "category": news_data_category, "q": sub_category,
-                                                          "language": "en"})
-            news_data = response.json()
-            logger.info(f"News API response: {response.status_code}")
-            articles = news_data.get("results", [])
+            response = client.latest_api(q=sub_category,
+                                         country=["us", "in"],
+                                         category=news_data_category, language=["en", "hi"],
+                                         removeduplicate=True)
+            articles = response.get("results", [])
+            logger.info(f"News API response: {response.get('status', 'error')}")
 
             if not articles:
                 logger.info("No new articles found.")
@@ -83,7 +95,7 @@ def lambda_handler(event):
                     news_post = NewsPost(
                         remote_id=article.get("article_id"),
                         title=article.get("title"),
-                        language=article.get("language"),
+                        language=get_language_code(article.get("language")),
                         description=article.get("description"),
                         content=process_text_to_editorjs(article.get("content")),
                         published_at=article.get("publishedAt", datetime.datetime.now()),
@@ -121,10 +133,49 @@ def lambda_handler(event):
 
 
 if __name__ == "__main__":
-    payload = {
-        "category": "business",
-        "nisee_category": "economy",
-        "sub_categories": ["market", "economy", "united states", "china", "business"]
+
+    data  = {
+        'business': {
+            "category": "business",
+            "nisee_category": "economy",
+            "sub_categories": ["market", "economy", "united states", "china", "business"]
+        },
+        'technology': {
+            "category": "technology",
+            "nisee_category": "technology",
+            "sub_categories": ["internet", "gadgets", "software", "mobile", "desktop", "artificial intelligence"]
+        },
+        'sports': {
+            "category": "sports",
+            "nisee_category": "sports",
+            "sub_categories": ["cricket", "hockey", "tennis", "football", "badminton", "basketball", "f1 racing"]
+        },
+        'health': {
+            "category": "health",
+            "nisee_category": "health",
+            "sub_categories": ["nutrition", "mental health", "fitness", "science", "health"]
+        },
+        'politics': {
+            "category": "politics",
+            "nisee_category": "politics",
+            "sub_categories": ["united states", "india", "china", "russia", "europe", "asia", "africa"]
+        },
+        'tourism': {
+            "category": "tourism",
+            "nisee_category": "travel",
+            "sub_categories": ["africa", "europe", "china", "india", "united states"]
+        },
+        'real_estate': {
+            "category": "real_estate",
+            "nisee_category": "real_estate",
+            "sub_categories": ["real_estate"]
+        },
+        'lifestyle': {
+            "category": "lifestyle",
+            "nisee_category": "lifestyle",
+            "sub_categories": ["entertainment", "food", "lifestyle", "environment", "tourism"]
+        }
     }
 
-    lambda_handler(payload)
+    for key, value in data.items():
+        lambda_handler(value)
