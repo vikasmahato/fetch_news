@@ -114,6 +114,7 @@ class NewsPost(Base):
     published_at: Mapped[Optional[datetime.datetime]] = mapped_column(DATETIME(fsp=6))
     remote_id: Mapped[Optional[str]] = mapped_column(String(1000))
     title: Mapped[Optional[str]] = mapped_column(String(5000))
+    images_json: Mapped[Optional[str]] = mapped_column(JSON)
     updated_at: Mapped[Optional[datetime.datetime]] = mapped_column(DATETIME(fsp=6))
     world_region: Mapped[Optional[str]] = mapped_column(Enum('AFRICA', 'ALL', 'ASIA', 'EUROPE', 'MIDDLE_EAST', 'NORTH_AMERICA', 'OCEANIA', 'SOUTH_AMERICA'))
     category_id: Mapped[Optional[int]] = mapped_column(Integer)

@@ -1,4 +1,5 @@
 import datetime
+import json
 import sys
 
 import uuid
@@ -81,10 +82,10 @@ def lambda_handler(event):
                         logger.info(f"Exsiting news article: {article.get('title')}")
                         continue
 
-                    processed_images = []
+                    images_json = None
                     image_uuid = uuid.uuid4()
                     if image_url:
-                        processed_images.append(process_image(image_url, image_uuid))
+                        images_json = json.dumps(process_image(image_url, image_uuid))
 
                     country = db.get_country_by_name(article.get('country'))
                     source = db.get_source(
@@ -115,7 +116,8 @@ def lambda_handler(event):
                         source=source,
                         images=[NewsPostImage(id=image_uuid.bytes, images = image_url, original_image_url = image_url, s3_image_base_url= "https://nisee-development.s3.ap-south-1.amazonaws.com/images/")] if image_url else [],
                         videos=[NewsPostVideo(videos = video_url)] if video_url else [],
-                        deleted=0
+                        deleted=0,
+                        images_json=images_json
                     )
                     processed_news.append(news_post)
 
