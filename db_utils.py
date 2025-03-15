@@ -42,16 +42,16 @@ class DatabaseSession:
 
         # Check cache
         if code in self.source_cache:
-            logger.info(f"Cache hit for source: {code}")
+            logger.debug(f"Cache hit for source: {code}")
             return self.source_cache[code]
 
         # Query the database
-        logger.info(f"Cache miss for source: {code}, querying database...")
+        logger.debug(f"Cache miss for source: {code}, querying database...")
         source = self.session.query(Source).filter_by(code=code).first()
 
         # If source does not exist, create a new one
         if not source:
-            logger.info(f"Creating new source: {code}")
+            logger.debug(f"Creating new source: {code}")
             source = Source(
                 code=code,
                 name=source_data.get("name"),
@@ -77,10 +77,10 @@ class DatabaseSession:
             name = name[0]  # Use the first element
 
         if name in self.country_cache:
-            logger.info(f"Cache hit for country: {name}")
+            logger.debug(f"Cache hit for country: {name}")
             return self.country_cache[name]
 
-        logger.info(f"Cache miss for country: {name}, querying database...")
+        logger.debug(f"Cache miss for country: {name}, querying database...")
         country = self.session.query(Country).filter_by(name_en = name).first()
 
         if country:
@@ -91,10 +91,10 @@ class DatabaseSession:
     def get_category_by_code(self, code: str) -> Type[Category] | None:
         """Fetch a category by its name with caching."""
         if code in self.category_cache:
-            logger.info(f"Cache hit for source: {code}")
+            logger.debug(f"Cache hit for source: {code}")
             return self.category_cache[code]
 
-        logger.info(f"Cache miss for source: {code}, querying database...")
+        logger.debug(f"Cache miss for source: {code}, querying database...")
         category = (self.session.query(Category)
                     .options(load_only(Category.id, Category.code, Category.description, Category.position, Category.redirect_url))
                     .filter_by(code = code.upper()).first())
