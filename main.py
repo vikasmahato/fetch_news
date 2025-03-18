@@ -12,42 +12,41 @@ def fetch_news():
             "nisee_category": "travel",
             "sub_categories": ["africa", "europe", "china", "india", "united states"]
         },
-        'real_estate': {
-            "category": "real_estate",
-            "nisee_category": "real_estate",
-            "sub_categories": ["real_estate"]
-        },
-        'business': {
-            "category": "business",
-            "nisee_category": "economy",
-            "sub_categories": ["market", "economy", "united states", "china", "business"]
-        },
-        'technology': {
-            "category": "technology",
-            "nisee_category": "technology",
-            "sub_categories": ["internet", "gadgets", "software", "mobile", "desktop", "artificial intelligence"]
-        },
-        'sports': {
-            "category": "sports",
-            "nisee_category": "sports",
-            "sub_categories": ["cricket", "hockey", "tennis", "football", "badminton", "basketball", "f1 racing"]
-        },
-        'health': {
-            "category": "health",
-            "nisee_category": "health",
-            "sub_categories": ["nutrition", "mental health", "fitness", "science", "health"]
-        },
-        'politics': {
-            "category": "politics",
-            "nisee_category": "politics",
-            "sub_categories": ["united states", "india", "china", "russia", "europe", "asia", "africa"]
-        },
-
-        'lifestyle': {
-            "category": "lifestyle",
-            "nisee_category": "lifestyle",
-            "sub_categories": ["entertainment", "food", "lifestyle", "environment", "tourism"]
-        }
+        # 'real_estate': {
+        #     "nisee_category": "real_estate",
+        #     "sub_categories": ["real_estate"]
+        # },
+        # 'business': {
+        #     "category": "business",
+        #     "nisee_category": "economy",
+        #     "sub_categories": ["market", "economy", "united states", "china", "business"]
+        # },
+        # 'technology': {
+        #     "category": "technology",
+        #     "nisee_category": "technology",
+        #     "sub_categories": ["internet", "gadgets", "software", "mobile", "desktop", "artificial intelligence"]
+        # },
+        # 'sports': {
+        #     "category": "sports",
+        #     "nisee_category": "sports",
+        #     "sub_categories": ["cricket", "hockey", "tennis", "football", "badminton", "basketball", "f1 racing"]
+        # },
+        # 'health': {
+        #     "category": "health",
+        #     "nisee_category": "health",
+        #     "sub_categories": ["nutrition", "mental health", "fitness", "science", "health"]
+        # },
+        # 'politics': {
+        #     "category": "politics",
+        #     "nisee_category": "politics",
+        #     "sub_categories": ["united states", "india", "china", "russia", "europe", "asia", "africa"]
+        # },
+        #
+        # 'lifestyle': {
+        #     "category": "lifestyle",
+        #     "nisee_category": "lifestyle",
+        #     "sub_categories": ["entertainment", "food", "lifestyle", "environment", "tourism"]
+        # }
     }
 
     for world_region in regions:
