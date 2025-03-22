@@ -55,12 +55,13 @@ def lambda_handler(event):
                                          category=news_data_category,
                                          language=["en", "hi", "de", "fr"],
                                          full_content=True,
+                                         image=True,
                                          removeduplicate=True)
             articles = response.get("results", [])
             logger.info(f"Fetching news for {sub_category}: {response.get('status', 'error')}")
 
             if not articles:
-                logger.info(f"No articles found for {sub_category} in {world_region}")
+                logger.info(f"No articles found for {sub_category} in {category}")
                 continue
 
             for article in articles:
@@ -154,11 +155,11 @@ def lambda_handler(event):
 if __name__ == "__main__":
 
     data = {
-        'tourism': {
-            "category": "tourism",
-            "nisee_category": "travel",
-            "sub_categories": ["africa", "europe", "china", "india", "united states"]
-        },
+        # 'tourism': {
+        #     "category": "tourism",
+        #     "nisee_category": "travel",
+        #     "sub_categories": ["africa", "europe", "china", "india", "united states", "middle east", "australia"]
+        # },
         # 'real_estate': {
         #     "nisee_category": "real_estate",
         #     "sub_categories": ["real estate"]
@@ -189,11 +190,11 @@ if __name__ == "__main__":
         #     "sub_categories": ["united states", "india", "china", "russia", "europe", "asia", "africa"]
         # },
         #
-        # 'lifestyle': {
-        #     "category": "lifestyle",
-        #     "nisee_category": "lifestyle",
-        #     "sub_categories": ["entertainment", "food", "lifestyle", "environment", "tourism"]
-        # }
+        'lifestyle': {
+            "category": "lifestyle",
+            "nisee_category": "lifestyle",
+            "sub_categories": ["entertainment", "food", "lifestyle", "environment", "tourism"]
+        }
     }
 
     for value in data.values():
