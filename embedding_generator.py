@@ -1,3 +1,5 @@
+import json
+
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct, Distance, VectorParams
@@ -44,9 +46,26 @@ class NewsPostVectorDB:
             text = post.title or ""
             vector = self.model.encode(text)
 
+            content_json = post.content or ""
+            paragraph_texts = []
+
+            try:
+                content_data = json.loads(content_json)
+                if isinstance(content_data, dict) and "blocks" in content_data:
+                    for block in content_data["blocks"]:
+                        if block.get("type") == "paragraph":
+                            paragraph_texts.append(block["data"].get("text", ""))
+            except Exception as e:
+                print(f"Failed to parse content JSON for row {post.id}: {e}")
+
+            content_text = " ".join(paragraph_texts)
+            if len(content_text) > 300:
+                content_text = content_text[:300].rstrip() + "..."
+
             payload = {
                 "id": post.id,
                 "title": post.title,
+                "content": content_text,
                 "published_at": post.published_at.isoformat() if post.published_at else None,
             }
 
