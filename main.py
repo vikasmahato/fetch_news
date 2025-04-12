@@ -41,7 +41,6 @@ def fetch_news():
             "nisee_category": "politics",
             "sub_categories": ["united states", "india", "china", "russia", "europe", "asia", "africa"]
         },
-
         'lifestyle': {
             "category": "lifestyle",
             "nisee_category": "lifestyle",

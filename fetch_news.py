@@ -23,18 +23,6 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
-# Mapping of world regions to countries
-# WORLD_REGIONS = {
-#     "AFRICA": ["ng", "za", "eg", "dz", "ke"],  # Nigeria, South Africa, etc.
-#     "ASIA": ["cn", "in", "jp", "kr", "id"],  # China, India, Japan, etc.
-#     "EUROPE": ["de", "fr", "gb", "it", "es"],  # Germany, France, UK, etc.
-#     "MIDDLE_EAST": ["sa", "ae", "iq", "ir", "tr"],  # Saudi Arabia, UAE, etc.
-#     "NORTH_AMERICA": ["us", "ca", "mx"],  # USA, Canada, Mexico
-#     "OCEANIA": ["au", "nz", "pg", "fj"],  # Australia, New Zealand, etc.
-#     "SOUTH_AMERICA": ["br", "ar", "co", "pe", "ve"]  # Brazil, Argentina, etc.
-# }
-
-
 def lambda_handler(event):
     try:
         db = DatabaseSession()
