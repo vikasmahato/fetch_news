@@ -122,7 +122,7 @@ class NewsPost(Base):
     source_id: Mapped[Optional[int]] = mapped_column(BigInteger)
     user_id: Mapped[Optional[int]] = mapped_column(BigInteger)
     formatting: Mapped[Optional[str]] = mapped_column(Enum('MARKDOWN', 'TEXT'))
-    sub_category: Mapped[Optional[str]] = mapped_column(Enum('BADMINTON', 'BASKETBALL', 'CRICKET', 'F1_RACING', 'FOOTBALL', 'HOCKEY', 'TENNIS', 'VOLLEYBALL', 'BASEBALL', 'GOLF', 'UNITED_STATES', 'INDIA', 'CHINA', 'RUSSIA', 'EUROPE', 'ASIA', 'AFRICA', 'ENTERTAINMENT', 'FOOD', 'LIFESTYLE', 'ENVIRONMENT', 'HEALTH', 'FITNESS', 'MENTAL_HEALTH', 'NUTRITION', 'SCIENCE', 'GADGETS', 'INTERNET', 'SOFTWARE', 'MOBILE', 'DESKTOP', 'ARTIFICIAL_INTELLIGENCE', 'BUSINESS', 'MARKET', 'ECONOMY', 'REAL_ESTATE', 'TOURISM'))
+    sub_category: Mapped[Optional[str]] = mapped_column(Enum('MIDDLE_EAST', 'BADMINTON','AUSTRALIA', 'MIDDLE_EAST', 'BASKETBALL','CRICKET','F1_RACING','FOOTBALL','HOCKEY','TENNIS','VOLLEYBALL','BASEBALL','GOLF','UNITED_STATES','INDIA','CHINA','RUSSIA','EUROPE','ASIA','AFRICA','ENTERTAINMENT','FOOD','LIFESTYLE','ENVIRONMENT','HEALTH','FITNESS','MENTAL_HEALTH','NUTRITION','SCIENCE','GADGETS','INTERNET','SOFTWARE','MOBILE','DESKTOP','ARTIFICIAL_INTELLIGENCE','BUSINESS','MARKET','ECONOMY','REAL_ESTATE','TOURISM'))
     type: Mapped[Optional[str]] = mapped_column(Enum('ORGANISATION_POST', 'USER_POST'))
 
     category: Mapped[List['Category']] = relationship('Category', foreign_keys='[Category.news_post_id]', back_populates='news_post')

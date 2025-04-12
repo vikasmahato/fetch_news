@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, load_only
 
+from embedding_generator import NewsPostVectorDB
 from get_secrets import get_db_url
 from models.models import NewsPost, Country, Source, Category, NewsFetchMetrics
 import logging
@@ -24,6 +25,7 @@ class DatabaseSession:
         self.country_cache: Dict[str, Type[Country]] = {}  # In-memory cache
         self.category_cache: Dict[str, Type[Category]] = {}  # In-memory cache
         self.source_cache: Dict[str, Type[Source]] = {}  # In-memory cache
+        self.vector_db = NewsPostVectorDB()
 
     def get_news_by_remote_id(self, remote_id: str) -> Type[NewsPost] | None:
         """Fetch a news post by its remote ID."""
@@ -109,6 +111,7 @@ class DatabaseSession:
         """Save a news post."""
         self.session.add(news_post)
         self.session.commit()
+        self.vector_db.save_embeddings(news_post)
         logger.info(f"News Post Created: ID {news_post.id}")
 
     def save_all(self, news_posts: List[NewsPost]):
@@ -117,6 +120,8 @@ class DatabaseSession:
             self.session.add_all(news_posts)
             self.session.commit()
             logger.info(f"Saved {len(news_posts)} news posts successfully.")
+            self.vector_db.save_embeddings(news_posts)
+            return news_posts
         except Exception as e:
             self.session.rollback()
             logger.error(f"Failed to save news posts: {e}")
@@ -127,6 +132,24 @@ class DatabaseSession:
         if self.session:
             self.session.close()
             print("Database session closed.")
+
+    def findAll(self, start=0, limit=1000) -> List[NewsPost]:
+        """
+        Fetch a batch of NewsPost records using offset and limit.
+        """
+        try:
+            posts = (
+                self.session.query(NewsPost)
+                .order_by(NewsPost.id.desc())  # Optional: sort by ID descending
+                .offset(start)
+                .limit(limit)
+                .all()
+            )
+            logger.info(f"Fetched {len(posts)} news posts (offset={start}, limit={limit}).")
+            return posts
+        except Exception as e:
+            logger.error(f"Error fetching news posts: {e}")
+            return []
 
 
 # Main execution

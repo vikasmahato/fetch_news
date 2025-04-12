@@ -2,12 +2,18 @@ import boto3
 import json
 
 SECRET_API_KEY_ARN = "arn:aws:secretsmanager:ap-south-1:864981733004:secret:test/news_api_key-3cjnL9"
+SECRET_VECTOR_KEY_ARN = "arn:aws:secretsmanager:ap-south-1:864981733004:secret:test/vector_db_api_key-okhCHu"
 SECRETS_DB_ARN_PROD = "arn:aws:secretsmanager:ap-south-1:864981733004:secret:rds!db-760fa0b2-a49b-4ec9-b5e0-084689152368-VVxepb"
 SECRETS_DB_ARN = "arn:aws:secretsmanager:ap-south-1:864981733004:secret:test/nisee/backend-rds-r0Jcjf"
 secrets_client = boto3.client("secretsmanager")
 
 def get_news_data_api_key():
     response = secrets_client.get_secret_value(SecretId=SECRET_API_KEY_ARN)
+    secret = json.loads(response["SecretString"])
+    return secret.get("API_KEY")
+
+def get_vector_db_api_key():
+    response = secrets_client.get_secret_value(SecretId=SECRET_VECTOR_KEY_ARN)
     secret = json.loads(response["SecretString"])
     return secret.get("API_KEY")
 
