@@ -56,7 +56,7 @@ class NewsPostVectorDB:
         self.qdrant.upsert(collection_name=self.collection_name, points=points)
         print(f"Uploaded {len(points)} news posts to Qdrant")
 
-    def search_news(self, query: str, limit: int = 5):
+    def search_news(self, query: str, limit: int = 50):
         """
         Searches for similar news posts in the vector DB based on a search term.
         """
