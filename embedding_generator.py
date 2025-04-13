@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct, Distance, VectorParams
 from get_secrets import get_vector_db_api_key
-
+from qdrant_client.http import models as qdrant_models
 
 class NewsPostVectorDB:
     def __init__(self, collection_name="news_posts"):
@@ -62,10 +62,25 @@ class NewsPostVectorDB:
             if len(content_text) > 300:
                 content_text = content_text[:300].rstrip() + "..."
 
+            try:
+                images = json.loads(post.images_json or '{}')
+                image_url = images.get("sm")
+            except (json.JSONDecodeError, TypeError):
+                image_url = None
+
+            if not image_url:
+                try:
+                    image_url = post.images[0].original_image_url
+                except (IndexError, AttributeError, TypeError):
+                    image_url = ""
+
             payload = {
                 "id": post.id,
                 "title": post.title,
                 "content": content_text,
+                "image_url": image_url,
+                "video_url": "",
+                "language": post.language,
                 "published_at": post.published_at.isoformat() if post.published_at else None,
             }
 
@@ -75,7 +90,7 @@ class NewsPostVectorDB:
         self.qdrant.upsert(collection_name=self.collection_name, points=points)
         print(f"Uploaded {len(points)} news posts to Qdrant")
 
-    def search_news(self, query: str, limit: int = 50):
+    def search_news(self, query: str,language = 'en', limit: int = 50):
         """
         Searches for similar news posts in the vector DB based on a search term.
         """
@@ -83,6 +98,14 @@ class NewsPostVectorDB:
         search_result = self.qdrant.search(
             collection_name=self.collection_name,
             query_vector=query_vector,
-            limit=limit
+            limit=limit,
+            query_filter=qdrant_models.Filter(
+                must=[
+                    qdrant_models.FieldCondition(
+                        key="language",
+                        match=qdrant_models.MatchValue(value=language)
+                    )
+                ]
+            )
         )
         return [hit.payload for hit in search_result]
